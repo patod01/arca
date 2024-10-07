@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>contador qlcsmlawia</title>
+   <script src="a.js"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="{ players: {{!jugadores}}, score: {} }">
+
+<style>
+   td,th{border-style: inset; padding: 3px;}
+   [x-cloak]{ display: none !important;}
+   .ingresa {
+      position: fixed;
+      border-style: dashed;
+      background: wheat;
+      top: 50vh;
+      left: 50vw;
+      translate: -50% -50%;
+      padding: 5px;
+   }
+   .g2, .g4 {
+      background: lightgray;
+   }
+</style>
+
+
+
+<!--! Agregador de puntos -->
+<div
+   class="ingresa"
+   x-data="{ busy: false, player: '', id: null, original_points: 0 }"
+   @change-point.window="
+      if (!busy) {
+         busy = true;
+         player = $event.detail.player;
+         id = $event.detail.id;
+         original_points = players[player][id];
+      }
+   "
+   x-show="busy"
+   @click.outside="
+      [original_points, players[player][id]] = [players[player][id], original_points];
+      busy = false;
+   "
+>
+   <template x-if="busy">
+   <div>
+      <div>
+         <div x-text="`${player} (puntos originales: ${original_points})`"></div>
+         <input
+            type="number"
+            x-model="players[player][id]"
+            @keydown.enter="
+               busy = false;
+               for (let player in players)
+                  score[player] = players[player].reduce((cum, item) => cum + parseInt(item), 0);
+               save_points(player, players[player]);
+            "
+         >
+      </div>
+      <br>
+      <div style="display: flex; justify-content: space-evenly; height: 33px;">
+         <button @click="players[player][id]--">resta 1</button>
+         <button @click="players[player][id]++">sumar 1</button>
+      </div>
+      <div style="display: flex; justify-content: space-evenly; height: 33px;">
+         <button @click="players[player][id]-=2">resta 2</button>
+         <button @click="players[player][id]+=2">sumar 2</button>
+      </div>
+      <div style="display: flex; justify-content: space-evenly; height: 33px;">
+         <button @click="players[player][id]-=5">resta 5</button>
+         <button @click="players[player][id]+=5">sumar 5</button>
+      </div>
+      <br>
+      <div style="display: flex; justify-content: space-evenly;">
+         <button @click="
+               busy = false;
+               for (let player in players)
+                  score[player] = players[player].reduce((cum, item) => cum + parseInt(item), 0);
+               save_points(player, players[player]);
+            "
+         >guardar</button>
+      </div>
+   </div>
+   </template>
+</div>
+
+
+
+<!--! TABLA -->
+<table
+   x-init="
+      0;
+      a = players;
+      for (let player in players)
+         score[player] = players[player].reduce((cum, item) => cum + item);
+   "
+>
+   <thead>
+   <tr>
+      <th class="g1" contenteditable>asdf</th>
+      <th class="g2" colspan="4">in game points</th>
+      <th class="g3" colspan="5">after game points</th>
+   </tr>
+   <tr>
+      <th class="g1">Player</th>
+
+      <th class="g2">camino</th>
+      <th class="g2">ciudad</th>
+      <th class="g2">iglesia</th>
+      <th class="g2">jardin</th>
+
+      <th class="g3">camino</th>
+      <th class="g3">ciudad</th>
+      <th class="g3">iglesia</th>
+      <th class="g3">jardin</th>
+      <th class="g3">campo</th>
+
+      <th class="g4">Total</th>
+   </tr>
+   </thead>
+   <tbody x-data>
+
+      <template x-for="points, player in players">
+      <tr>
+         <td class="g1" x-text="player"></td>
+
+         <template x-for="_, id in points">
+         <td
+            :class="id <= 3? 'g2': 'g3'"
+            x-text="players[player][id]"
+            @click="$dispatch('change-point', {player, id})"
+         ></td>
+         </template>
+
+         <td class="g4" x-text="score[player]"></td>
+      </tr>
+      </template>
+
+   </tbody>
+</table>
+
+<script>
+   let a;
+   // setTimeout(() => window.location.reload(), 2000)
+</script>
+
+</body>
+</html>

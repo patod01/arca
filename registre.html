@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>contador qlcsmlawia</title>
+   <script src="a.js"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="{ players: []}">
+
+<div x-data="{ persona: '' }">
+   add people:
+   <input
+      id="nombrs"
+      type="text"
+      placeholder="pete"
+      x-model="persona"
+      @keydown.enter="
+         if (persona.replaceAll(' ', '') != '')
+            players.push(persona.replaceAll(' ', ''));
+         persona = '';
+         nombrs.focus()
+      "
+   >
+   <button @click="
+      if (persona.replaceAll(' ', '') != '')
+         players.push(persona.replaceAll(' ', ''));
+      persona = '';
+      nombrs.focus()
+   ">ADD</button>
+   <button @click="api_shortcut('registre_players', 'POST', JSON.stringify(players))">
+      send list to server
+   </button>
+</div>
+
+<br>
+
+peopel:
+<ol>
+   <template x-for="persona, id in players">
+   <li>
+      <span x-text="persona"></span>
+      <button :id="id" @click="players.splice(id, 1)">DEL</button>
+   </li>
+   </template>
+</ul>
+
+<script>
+   let a;
+   // setTimeout(() => window.location.reload(), 20000);
+</script>
+
+</body>
+</html>
