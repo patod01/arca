@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>carrito</title>
+   <script src="a.js"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body
+   x-data="{ listado: {{!listado}}, filtro: 'todo', new_item: '' }"
+   x-init="
+      0;
+      for (let cosa in listado)
+         if (listado[cosa].is_ready == 'false')
+            listado[cosa].is_ready = false;
+      a = listado
+   "
+>
+
+<!--! Agregador de items -->
+<div>
+   Nuevo item:
+   <input
+      type="text"
+      placeholder="nombre item"
+      x-model="new_item"
+      @keydown.enter="add_item_to(listado, new_item); new_item = ''"
+   >
+   <button @click="add_item_to(listado, new_item); new_item = ''">
+      agregar
+   </button>
+</div>
+
+
+
+<!--! Filtro -->
+<div style="float: right;">
+   <h3 style="display: inline-block;">Filtro:</h3>
+   <button
+      style="height: 2.5em;"
+      x-text="filtro"
+      @click="
+         if (filtro == 'todo') {
+            filtro = 'hecho';
+         } else if (filtro == 'hecho') {
+            filtro = 'pendiente';
+         } else if (filtro == 'pendiente') {
+            filtro = 'todo';
+         }
+      "
+      x-bind:class="filtro"
+   ></button>
+</div>
+
+
+
+<!--! Listado -->
+<h3>Listado:</h3>
+
+<style>
+   :root {
+      --pendiente: lightcoral;
+      --hecho: lightsteelblue;
+      --borde-px: 7px;
+   }
+   button {
+      width: 7em;
+      &.pendiente {background-color: var(--pendiente);}
+      &.hecho {background-color: var(--hecho);}
+   }
+   .lista {
+      max-width: 34em;
+      & .list-item {
+         border-style: solid;
+         border-radius: var(--borde-px);
+         border-width: 2px;
+         border-color: var(--pendiente);
+         &.hecho {border-color: var(--hecho);}
+         min-height: 3em;
+         margin: 3px;
+         padding: 3px;
+
+         display: flex;
+         align-items: center;
+
+         & .indice {
+            padding-right: 5px;
+            padding-left: 5px;
+            margin-right: 5px;
+            background-color: var(--pendiente);
+            &.hecho {background-color: var(--hecho);}
+            border-radius: var(--borde-px);
+            align-self: stretch;
+            align-content: center;
+         }
+         & .nombre-item {flex: 0 1 100%;}
+         & button {
+            float: right;
+            width: 7em;
+            height: 2.5em;
+         }
+      }
+   }
+</style>
+
+<div class="lista">
+   <template x-for="item, id in listado">
+   <div
+      class="list-item"
+      x-data="{ options: false, editing: false }"
+      :class="{ 'hecho': item.is_ready }"
+      x-show="
+         if ((filtro == 'todo' || filtro == 'hecho')
+         && item.is_ready) return true;
+         else if ((filtro == 'todo' || filtro == 'pendiente')
+         && !item.is_ready) return true;"
+   >
+      <div
+         class="indice" x-text="`${id + 1})`"
+         :class="{ 'hecho': item.is_ready }"
+      ></div>
+      <div class="nombre-item">
+         <div
+            x-text="`${item.nombre}`"
+            x-show="!editing"
+            @click="options = !options"
+         ></div>
+         <input type="text" :value="item.nombre" x-model="item.nombre" x-show="editing">
+      </div>
+      <div class="botones-item">
+         <button
+            x-text="item.is_ready? 'hecho': 'pendiente'"
+            x-show="!options"
+            @click="item.is_ready = !item.is_ready"
+         ></button>
+         <button
+            x-show="options && !editing"
+            @click="listado.splice(id, 1); options = !options"
+         >borrar</button>
+         <button
+            x-show="options"
+            @click="editing = !editing"
+            x-text="editing? 'guardar': 'editar'"
+         ></button>
+      </div>
+   </div>
+   </template>
+</div>
+
+</body>
+</html>
