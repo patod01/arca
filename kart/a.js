@@ -1,4 +1,4 @@
-const timout = 2000;
+const timout = 20000;
 
 console.log(Date());
 let a;

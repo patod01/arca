@@ -92,13 +92,24 @@
    <button
       @click="
          if (contenido != old) {
-            listado = [];
-            for (let cosa of contenido.split('\n'))
-               listado.push({
-                  nombre: cosa,
-                  is_ready: false,
-                  hora: 0,
-               });
+            const items = contenido.split('\n');
+            for (let i in items) {
+               if (parseInt(i) + 1 <= listado.length) {
+                  if (items[i] != listado[i].nombre){
+                     console.log('actualizando en', parseInt(i)+1);
+                     listado[i].nombre = items[i];
+                  } else {
+                     console.log('saltando linea', parseInt(i) +1);
+                  }
+               } else {
+                  console.log('agregando en', parseInt(i)+1);
+                  listado.push({
+                     nombre: items[i],
+                     is_ready: false,
+                     hora: 0,
+                  });
+               }
+            }
          }
          bulk = false;
       "
