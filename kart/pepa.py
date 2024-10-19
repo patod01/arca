@@ -14,12 +14,12 @@ def index():
 
 listado = [
      {
-          "nombre": ' cosa1',
+          "nombre": 'a cosa1',
           "is_ready": False,
           "hora": 0,
      },
      {
-          "nombre": 'cosa 2 pero muy larga 1313 y sige alargandose casi tanto como la mia',
+          "nombre": '1313 y como la mia',
           "is_ready": False,
           "hora": 0,
      },

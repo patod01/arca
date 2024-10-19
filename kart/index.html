@@ -8,13 +8,13 @@
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body
-   x-data="{ listado: {{!listado}}, filtro: 'todo', new_item: '' }"
+   x-data="{ listado: {{!listado}}, filtro: 'todo', new_item: '', bulk: false }"
    x-init="
       0;
       for (let cosa in listado)
          if (listado[cosa].is_ready == 'false')
             listado[cosa].is_ready = false;
-      a = listado
+      a = listado // AAAAAAAAAAAAaaaaaAAAAAAAAAAAAAAAA
    "
 >
 
@@ -35,10 +35,9 @@
 
 
 <!--! Filtro -->
-<div style="float: right;">
+<div>
    <h3 style="display: inline-block;">Filtro:</h3>
    <button
-      style="height: 2.5em;"
       x-text="filtro"
       @click="
          if (filtro == 'todo') {
@@ -49,9 +48,63 @@
             filtro = 'todo';
          }
       "
-      x-bind:class="filtro"
+      :class="filtro"
    ></button>
 </div>
+
+
+
+<!--! Bulk editor -->
+<div>
+   <h3 style="display: inline-block;">Bulk:</h3>
+   <button @click="if (!bulk) {await $nextTick(); bulk = true}">editar</button>
+</div>
+
+<template x-if="bulk">
+<div
+   x-data="{filas: 1, contenido: '', old: ''}"
+   id="editor"
+   @click.outside="bulk = false"
+>
+   <p>escribe un listado separado por saltos de linea cada item</p>
+
+   <textarea
+      id="bulk-lst"
+      placeholder="agrega items..."
+      autofocus
+      @keydown.enter="filas++"
+      :rows="filas"
+      x-text="contenido"
+      x-model="contenido"
+      x-init="contenido = (() => {
+         let cosas = '';
+         for (let cosa in listado) {
+            cosas += listado[cosa].nombre + '\n';
+            filas++;
+         }
+         filas--;
+         return cosas.slice(0, -1);
+      })();
+      old = contenido"
+   ></textarea>
+
+   <br>
+   <button
+      @click="
+         if (contenido != old) {
+            listado = [];
+            for (let cosa of contenido.split('\n'))
+               listado.push({
+                  nombre: cosa,
+                  is_ready: false,
+                  hora: 0,
+               });
+         }
+         bulk = false;
+      "
+   >guardar</button>
+</div>
+</template>
 
 
 
@@ -64,8 +117,26 @@
       --hecho: lightsteelblue;
       --borde-px: 7px;
    }
+   #editor {
+      position: fixed;
+      z-index: 2;
+      top: 50vh;
+      left: 50vw;
+      translate: -50% -50%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      max-width: 321px;
+      padding: 11px;
+      border-style: dotted;
+      background-color: whitesmoke;
+      & textarea {width: 80%;}
+   }
    button {
       width: 7em;
+      height: 2.5em;
       &.pendiente {background-color: var(--pendiente);}
       &.hecho {background-color: var(--hecho);}
    }
@@ -94,11 +165,13 @@
             align-self: stretch;
             align-content: center;
          }
-         & .nombre-item {flex: 0 1 100%;}
+         & .nombre-item {
+            flex: 0 1 100%;
+            align-self: stretch;
+            align-content: center;
+         }
          & button {
             float: right;
-            width: 7em;
-            height: 2.5em;
          }
       }
    }
@@ -120,14 +193,14 @@
          class="indice" x-text="`${id + 1})`"
          :class="{ 'hecho': item.is_ready }"
       ></div>
-      <div class="nombre-item">
-         <div
-            x-text="`${item.nombre}`"
-            x-show="!editing"
-            @click="options = !options"
-         ></div>
+
+      <div class="nombre-item" @click="options = !options" x-show="!editing">
+         <div x-text="`${item.nombre}`"></div>
+      </div>
+      <div class="nombre-item" x-show="editing">
          <input type="text" :value="item.nombre" x-model="item.nombre" x-show="editing">
       </div>
+
       <div class="botones-item">
          <button
             x-text="item.is_ready? 'hecho': 'pendiente'"
