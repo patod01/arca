@@ -76,22 +76,21 @@
    <p>escribe un listado separado por saltos de linea cada item</p>
 
    <textarea
+      style="resize: none;"
       id="bulk-lst"
       placeholder="agrega items..."
       autofocus
-      @keydown.enter="filas++"
       :rows="filas"
       x-text="contenido"
       x-model="contenido"
       x-init="contenido = (() => {
          let cosas = '';
-         for (let cosa in listado) {
+         for (let cosa in listado)
             cosas += listado[cosa].nombre + '\n';
-            filas++;
-         }
-         filas--;
+         filas = listado.length;
          return cosas.slice(0, -1);
       })();
+      $watch('contenido', contenido => filas = contenido.split('\n').length);
       old = contenido"
    ></textarea>
 
