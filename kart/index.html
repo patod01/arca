@@ -4,8 +4,63 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const timout = 10000;
+      setTimeout(() => window.location.reload(), timout);
+   </script>
+   <style>
+      .menu {
+         border: 3px solid lightsteelblue;
+         padding: 10px;
+         text-align: center;
+      }
+      button {
+         width: 7em;
+         height: 2.5em;
+      }
+   </style>
 </head>
-<body>
-   <a href="kart">ir a lista</a>
+<body
+   x-data="{
+      id_lista: '',
+      list_state: '',
+      state: [
+         'solicitada',
+         'creada',
+         'encontrada',
+         'buscando',
+         'inexistente'
+      ]
+   }"
+>
+   <a x-ref="asdf" href="kart">ir a lista</a>
+   <div class="menu">
+      <div>
+         <p><strong>Nueva lista:</strong></p>
+
+         <button @click="list_state = state[0]">crear lista</button>
+         <p x-text="list_state == state[0]? 'creando lista...': ''"></p>
+         <p x-text="list_state == state[1]? 'lista creada!': ''"></p>
+
+         <button
+            x-show="list_state == state[1]"
+            @click="$refs.asdf.click()"
+         >abrir lista</button>
+      </div>
+
+      <div>
+         <p><strong>Cargar lista:</strong></p>
+         <span>Inserta ID de lista:</span>
+         <input x-model="id_lista" placeholder="inserte ID">
+         <p x-text="list_state == state[3]? 'buscando lista...': ''"></p>
+
+         <button @click="list_state = state[3]">buscar lista</button>
+         <button
+            x-show="0"
+            @click="'inserte codigo para reenviar alistar'"
+         >abrir lista</button>
+      </div>
+   </div>
 </body>
 </html>
