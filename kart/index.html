@@ -8,7 +8,13 @@
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body
-   x-data="{ listado: {{!listado}}, filtro: 'todo', new_item: '', bulk: false }"
+   x-data="{
+      listado: {{!listado}},
+      filtro: 'todo',
+      new_item: '',
+      bulk: false,
+      last_time: []
+   }"
    x-init="
       0;
       for (let cosa in listado)
@@ -30,6 +36,7 @@
    <button @click="add_item_to(listado, new_item); new_item = ''">
       agregar
    </button>
+   <button @click="backup(listado)">backup!</button>
 </div>
 
 
@@ -106,7 +113,7 @@
                   listado.push({
                      nombre: items[i],
                      is_ready: false,
-                     hora: 0,
+                     hora: now(),
                   });
                }
             }

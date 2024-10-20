@@ -12,40 +12,26 @@ def index():
      return template('index.html', listado=listado_to_json(listado))
 
 
-listado = [
-     {
-          "nombre": 'a cosa1',
-          "is_ready": False,
-          "hora": 0,
-     },
-     {
-          "nombre": '1313 y como la mia',
-          "is_ready": False,
-          "hora": 0,
-     },
-     {
-          "nombre": 'cosa3',
-          "is_ready": False,
-          "hora": 0,
-     },
-     {
-          "nombre": 'cosa4',
-          "is_ready": False,
-          "hora": 0,
-     }
-]
+listado = []
 
 def listado_to_json(cosa):
      for i, item in enumerate(cosa):
           cosa[i] = {
                "nombre": cosa[i]['nombre'],
                "is_ready": str(cosa[i]['is_ready']).lower(),
-               "hora": str(cosa[i]['hora']),
+               "hora": cosa[i]['hora'],
           }
      return str(cosa)
 
 
 ### API ###
+@route('/backup', method=['POST'])
+def backup():
+     print((request.json))
+     print(type(request.json))
+     global listado
+     listado = request.json
+     return 'listado actualizado'
 
 ### # ###
 
