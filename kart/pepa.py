@@ -1,5 +1,15 @@
-import sys
+import sys, json, os
 from bottle import error, route, run, static_file, template, request, response
+
+
+### Config ###
+DATABASE = 'db.json'
+
+if os.path.isfile(DATABASE):
+     with open(DATABASE) as DB:
+          listado = json.load(DB)
+else:
+     listado = []
 
 
 ### Real sh1t ###
@@ -10,9 +20,6 @@ def staticjs():
 @route('/')
 def index():
      return template('index.html', listado=listado_to_json(listado))
-
-
-listado = []
 
 def listado_to_json(cosa):
      for i, item in enumerate(cosa):
@@ -31,8 +38,9 @@ def backup():
      print(type(request.json))
      global listado
      listado = request.json
+     with open(DATABASE, 'w') as DB:
+          json.dump(listado, DB)
      return 'listado actualizado'
-
 ### # ###
 
 if __name__ == '__main__':
