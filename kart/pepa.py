@@ -17,6 +17,10 @@ else:
 def staticjs():
      return static_file('/a.js', root='.')
 
+@route('/')
+def index():
+     return static_file('index.html', root='.')
+
 @route('/kart')
 def kart():
      return template('kart.html', listado=listado_to_json(listado))
