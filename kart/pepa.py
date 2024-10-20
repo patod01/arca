@@ -17,9 +17,9 @@ else:
 def staticjs():
      return static_file('/a.js', root='.')
 
-@route('/')
-def index():
-     return template('index.html', listado=listado_to_json(listado))
+@route('/kart')
+def kart():
+     return template('kart.html', listado=listado_to_json(listado))
 
 def listado_to_json(cosa):
      for i, item in enumerate(cosa):
