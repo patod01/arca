@@ -28,8 +28,8 @@
       state: [
          'solicitada',
          'creada',
-         'encontrada',
          'buscando',
+         'encontrada',
          'inexistente'
       ]
    }"
@@ -53,12 +53,14 @@
          <p><strong>Cargar lista:</strong></p>
          <span>Inserta ID de lista:</span>
          <input x-model="id_lista" placeholder="inserte ID">
-         <p x-text="list_state == state[3]? 'buscando lista...': ''"></p>
+         <p x-text="list_state == state[2]? 'buscando lista...': ''"></p>
+         <p x-text="list_state == state[3]? 'lista encontrada!': ''"></p>
+         <p x-text="list_state == state[4]? 'lista inexistente.': ''"></p>
 
-         <button @click="list_state = state[3]">buscar lista</button>
+         <button @click="list_state = state[2]">buscar lista</button>
          <button
-            x-show="0"
-            @click="'inserte codigo para reenviar alistar'"
+            x-show="list_state == state[3]"
+            @click="$refs.asdf.click()"
          >abrir lista</button>
       </div>
    </div>
