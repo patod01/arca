@@ -3,12 +3,10 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
+   <title>hola</title>
+   <script src="static/js/index.js"></script>
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-   <script>
-      const timout = 10000;
-      setTimeout(() => window.location.reload(), timout);
-   </script>
+
    <style>
       .menu {
          border: 3px solid lightsteelblue;
@@ -33,20 +31,22 @@
          'inexistente'
       ]
    }"
+   x-init="$watch('id_lista', valor => valor.length > 0? list_state = state[1]: 0)"
 >
    <a x-ref="asdf" href="kart">ir a lista</a>
    <div class="menu">
       <div>
          <p><strong>Nueva lista:</strong></p>
 
-         <button @click="list_state = state[0]">crear lista</button>
+         <button
+            @click="
+               list_state = state[0];
+               id_lista = await get_new_list()
+            "
+         >crear lista</button>
+
          <p x-text="list_state == state[0]? 'creando lista...': ''"></p>
          <p x-text="list_state == state[1]? 'lista creada!': ''"></p>
-
-         <button
-            x-show="list_state == state[1]"
-            @click="$refs.asdf.click()"
-         >abrir lista</button>
       </div>
 
       <div>
@@ -57,7 +57,13 @@
          <p x-text="list_state == state[3]? 'lista encontrada!': ''"></p>
          <p x-text="list_state == state[4]? 'lista inexistente.': ''"></p>
 
-         <button @click="list_state = state[2]">buscar lista</button>
+         <button
+            @click="
+               list_state = state[2];
+               list_state = await check_list(id_lista);
+            "
+         >buscar lista</button>
+
          <button
             x-show="list_state == state[3]"
             @click="$refs.asdf.click()"

@@ -1,4 +1,4 @@
-import sys, json, os
+import sys, json, os, random
 from bottle import error, route, run, static_file, template, request, response
 
 
@@ -9,17 +9,17 @@ if os.path.isfile(DATABASE):
      with open(DATABASE) as DB:
           listado = json.load(DB)
 else:
-     listado = []
+     listado = {}
 
 
 ### Real sh1t ###
-@route('/a.js')
-def staticjs():
-     return static_file('/a.js', root='.')
-
 @route('/')
 def index():
      return static_file('index.html', root='.')
+
+@route('/static/<file:path>')
+def static(file):
+     return static_file(file, root='./static')
 
 @route('/kart')
 def kart():
@@ -45,6 +45,24 @@ def backup():
      with open(DATABASE, 'w') as DB:
           json.dump(listado, DB)
      return 'listado actualizado'
+
+@route('/new_list', method=['POST'])
+def new_list():
+     keep_running = True
+     while keep_running:
+          list_id = str(random.randint(1000, 9999))
+          if list_id not in listado.keys():
+               listado[list_id] = []
+               keep_running = not keep_running
+     print(listado)
+     return list_id
+
+@route('/check_list', method=['GET'])
+def check_list():
+     if request.query.id in listado.keys():
+          return 'encontrada'
+     else:
+          return 'inexistente'
 ### # ###
 
 if __name__ == '__main__':
