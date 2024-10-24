@@ -33,7 +33,6 @@
    }"
    x-init="$watch('id_lista', valor => valor.length > 0? list_state = state[1]: 0)"
 >
-   <a x-ref="asdf" href="kart">ir a lista</a>
    <div class="menu">
       <div>
          <p><strong>Nueva lista:</strong></p>
@@ -66,9 +65,10 @@
 
          <button
             x-show="list_state == state[3]"
-            @click="$refs.asdf.click()"
+            @click="$refs.link_lista.click()"
          >abrir lista</button>
       </div>
+      <a x-ref="link_lista" :href="`kart/list/${id_lista}`" x-show="false">ir a lista</a>
    </div>
 </body>
 </html>

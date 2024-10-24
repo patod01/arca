@@ -4,11 +4,12 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>carrito</title>
-   <script src="a.js"></script>
+   <script src="/static/js/a.js"></script>
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body
    x-data="{
+      id_lista: {{id_lista}},
       listado: {{!listado}},
       filtro: 'todo',
       new_item: '',
@@ -17,9 +18,6 @@
    }"
    x-init="
       0;
-      for (let cosa in listado)
-         if (listado[cosa].is_ready == 'false')
-            listado[cosa].is_ready = false;
       a = listado // AAAAAAAAAAAAaaaaaAAAAAAAAAAAAAAAA
    "
 >
@@ -36,7 +34,7 @@
    <button @click="add_item_to(listado, new_item); new_item = ''">
       agregar
    </button>
-   <button @click="backup(listado)">backup!</button>
+   <button @click="backup(id_lista, listado)">backup!</button>
 </div>
 
 

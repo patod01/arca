@@ -1,5 +1,5 @@
 import sys, json, os, random
-from bottle import error, route, run, static_file, template, request, response
+from bottle import error, route, run, static_file, template, request, response, redirect
 
 
 ### Config ###
@@ -13,6 +13,10 @@ else:
 
 
 ### Real sh1t ###
+@error(404)
+def go_default(error):
+     return 'notmyproblem .!.'
+
 @route('/')
 def index():
      return static_file('index.html', root='.')
@@ -21,41 +25,41 @@ def index():
 def static(file):
      return static_file(file, root='./static')
 
-@route('/kart')
-def kart():
-     return template('kart.html', listado=listado_to_json(listado))
-
-def listado_to_json(cosa):
-     for i, item in enumerate(cosa):
-          cosa[i] = {
-               "nombre": cosa[i]['nombre'],
-               "is_ready": str(cosa[i]['is_ready']).lower(),
-               "hora": cosa[i]['hora'],
-          }
-     return str(cosa)
+@route('/kart/<modo>/<id_lista:int>')
+def kart(modo, id_lista):
+     if str(id_lista) not in listado.keys():
+          return redirect('/error')
+     if modo == 'full':
+          print(listado)
+          return listado
+     elif modo == 'list':
+          return template(
+               'kart.html',
+               id_lista=id_lista,
+               listado=json.dumps(listado[str(id_lista)]).replace('"', "'")
+          )
 
 
 ### API ###
 @route('/backup', method=['POST'])
 def backup():
-     print((request.json))
-     print(type(request.json))
-     global listado
-     listado = request.json
+     listado[str(request.json['id_lista'])] = request.json['listado']
      with open(DATABASE, 'w') as DB:
           json.dump(listado, DB)
      return 'listado actualizado'
 
 @route('/new_list', method=['POST'])
 def new_list():
-     keep_running = True
-     while keep_running:
-          list_id = str(random.randint(1000, 9999))
+     umin = 1000
+     umax = 1003
+     while ...:
+          list_id = str(random.randint(umin, umax))
           if list_id not in listado.keys():
                listado[list_id] = []
-               keep_running = not keep_running
-     print(listado)
-     return list_id
+               print(listado)
+               return list_id
+          elif len(listado) == umax - umin + 1:
+               return 'fuku'
 
 @route('/check_list', method=['GET'])
 def check_list():

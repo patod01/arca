@@ -37,13 +37,13 @@ function get_last_edit() {
           .catch(err => console.error(err));
 }
 
-function backup(listado) {
+function backup(id_lista, listado) {
      const api = 'backup';
      const method = 'POST';
      const options = {
           method: `${method}`,
           headers: {'Content-Type': 'application/json'},
-          body: `${JSON.stringify(listado)}`
+          body: JSON.stringify({id_lista, listado})
      };
      fetch(`/${api}`, options)
           .then(response => response.text())
