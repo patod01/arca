@@ -1,15 +1,24 @@
 import sys, json, os, random
-from bottle import error, route, run, static_file, template, request, response, redirect
+from bottle import (
+     error,
+     redirect,
+     request,
+     response,
+     route,
+     run,
+     static_file,
+     template,
+)
 
 
 ### Config ###
-DATABASE = 'db.json'
+DATABASE_PATH = 'db.json'
 
-if os.path.isfile(DATABASE):
-     with open(DATABASE) as DB:
-          listado = json.load(DB)
+if os.path.isfile(DATABASE_PATH):
+     with open(DATABASE_PATH) as DB:
+          notepad = json.load(DB)
 else:
-     listado = {}
+     notepad = {}
 
 
 ### Real sh1t ###
@@ -27,25 +36,25 @@ def static(file):
 
 @route('/kart/<modo>/<id_lista:int>')
 def kart(modo, id_lista):
-     if str(id_lista) not in listado.keys():
+     if str(id_lista) not in notepad.keys():
           return redirect('/error')
      if modo == 'full':
-          print(listado)
-          return listado
+          print(notepad)
+          return notepad
      elif modo == 'list':
           return template(
                'kart.html',
                id_lista=id_lista,
-               listado=json.dumps(listado[str(id_lista)]).replace('"', "'")
+               listado=json.dumps(notepad[str(id_lista)]).replace('"', "'")
           )
 
 
 ### API ###
 @route('/backup', method=['POST'])
 def backup():
-     listado[str(request.json['id_lista'])] = request.json['listado']
-     with open(DATABASE, 'w') as DB:
-          json.dump(listado, DB)
+     notepad[str(request.json['id_lista'])] = request.json['listado']
+     with open(DATABASE_PATH, 'w') as DB:
+          json.dump(notepad, DB)
      return 'listado actualizado'
 
 @route('/new_list', method=['POST'])
@@ -54,21 +63,22 @@ def new_list():
      umax = 1003
      while ...:
           list_id = str(random.randint(umin, umax))
-          if list_id not in listado.keys():
-               listado[list_id] = []
-               print(listado)
+          if list_id not in notepad.keys():
+               notepad[list_id] = []
+               print(notepad)
                return list_id
-          elif len(listado) == umax - umin + 1:
+          elif len(notepad) == umax - umin + 1:
                return 'fuku'
 
 @route('/check_list', method=['GET'])
 def check_list():
-     if request.query.id in listado.keys():
+     if request.query.id in notepad.keys():
           return 'encontrada'
      else:
           return 'inexistente'
-### # ###
 
+
+### # ###
 if __name__ == '__main__':
      if len(sys.argv) != 3: raise Exception('EXPLODE')
      print(f'Running in {sys.argv[1]} mode on port {sys.argv[2]}...')
