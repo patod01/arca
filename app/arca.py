@@ -1,11 +1,6 @@
 import sys, json, os, random
-from bottle import (
-     Bottle,
-     static_file,
-)
+from bottle import Bottle, static_file
 
-
-### config ###
 app = Bottle()
 
 tapp = Bottle()
