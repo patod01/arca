@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Arca</title>
+
+   <script src="cogs.mjs"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data>
+
+<h1>Arca</h1>
+
+<ul>
+   <template x-for="app in menu">
+   <li>
+      <a :href="app" x-text="app"></a>
+   </li>
+   </template>
+</ul>
+
+</body>
+</html>
