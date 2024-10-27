@@ -37,14 +37,11 @@ def index():
 def static(file):
      return static_file(file, root='.'+MODULE_PATH+'/static')
 
-@route('/kart/<modo>/<id_lista:int>')
-def kart(modo, id_lista):
+@route('/list/<id_lista:int>')
+def kart(id_lista):
      if str(id_lista) not in notepad.keys():
           return redirect('/error')
-     if modo == 'full':
-          print(notepad)
-          return notepad
-     elif modo == 'list':
+     else:
           return template(
                '.' + MODULE_PATH + '/kart.html',
                module_path=MODULE_PATH,
