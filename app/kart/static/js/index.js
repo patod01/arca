@@ -1,16 +1,9 @@
-const timout = 20000;
-setTimeout(() => window.location.reload(), timout);
-
-console.log(Date());
-let a;
-
 async function get_new_list() {
      const api = `.${module_path}/new_list`;
      const method = 'POST';
      const options = {
           method: `${method}`,
           headers: {'Content-Type': 'application/json'},
-          // body: `${JSON.stringify()}`
      };
      let id_list = await fetch(`/${api}`, options)
           .then(response => response.text())

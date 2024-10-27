@@ -36,42 +36,48 @@
    }"
    x-init="$watch('id_lista', valor => valor.length > 0? list_state = state[1]: 0)"
 >
-   <div class="menu">
-      <div>
-         <p><strong>Nueva lista:</strong></p>
 
-         <button
-            @click="
-               list_state = state[0];
-               id_lista = await get_new_list()
-            "
-         >crear lista</button>
+<div class="menu">
+   <div>
+      <p><strong>Nueva lista:</strong></p>
 
-         <p x-text="list_state == state[0]? 'creando lista...': ''"></p>
-         <p x-text="list_state == state[1]? 'lista creada!': ''"></p>
-      </div>
+      <button
+         @click="
+            list_state = state[0];
+            id_lista = await get_new_list()
+         "
+      >crear lista</button>
 
-      <div>
-         <p><strong>Cargar lista:</strong></p>
-         <span>Inserta ID de lista:</span>
-         <input x-model="id_lista" placeholder="inserte ID">
-         <p x-text="list_state == state[2]? 'buscando lista...': ''"></p>
-         <p x-text="list_state == state[3]? 'lista encontrada!': ''"></p>
-         <p x-text="list_state == state[4]? 'lista inexistente.': ''"></p>
-
-         <button
-            @click="
-               list_state = state[2];
-               list_state = await check_list(id_lista);
-            "
-         >buscar lista</button>
-
-         <button
-            x-show="list_state == state[3]"
-            @click="$refs.link_lista.click()"
-         >abrir lista</button>
-      </div>
-      <a x-ref="link_lista" :href="`{{module_path}}/kart/list/${id_lista}`" x-show="false">ir a lista</a>
+      <p x-text="list_state == state[0]? 'creando lista...': ''"></p>
+      <p x-text="list_state == state[1]? 'lista creada!': ''"></p>
    </div>
+
+   <div>
+      <p><strong>Cargar lista:</strong></p>
+      <span>Inserta ID de lista:</span>
+      <input x-model="id_lista" placeholder="inserte ID">
+      <p x-text="list_state == state[2]? 'buscando lista...': ''"></p>
+      <p x-text="list_state == state[3]? 'lista encontrada!': ''"></p>
+      <p x-text="list_state == state[4]? 'lista inexistente.': ''"></p>
+
+      <button
+         @click="
+            list_state = state[2];
+            list_state = await check_list(id_lista);
+         "
+      >buscar lista</button>
+
+      <button
+         x-show="list_state == state[3]"
+         @click="$refs.link_lista.click()"
+      >abrir lista</button>
+   </div>
+   <a
+      x-ref="link_lista"
+      :href="`{{module_path}}/kart/list/${id_lista}`"
+      x-show="false"
+   >ir a lista</a>
+</div>
+
 </body>
 </html>

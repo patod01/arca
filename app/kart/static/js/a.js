@@ -1,14 +1,7 @@
-const timout = 20000;
-
-console.log(Date());
-let a;
-
 function add_item_to(listado, new_item) {
      if (new_item != '')
           listado.push({nombre: new_item, is_ready: false, hora: 0});
 }
-
-// setTimeout(() => window.location.reload(), timout);
 
 function now() {
      return [
@@ -27,7 +20,6 @@ function get_last_edit() {
      const options = {
           method: `${method}`,
           headers: {'Content-Type': 'application/json'},
-          // body: ``
      };
      fetch(`/${api}`, options)
           .then(response => response.json())
@@ -36,6 +28,8 @@ function get_last_edit() {
           })
           .catch(err => console.error(err));
 }
+
+// setTimeout(get_last_edit, 5000);
 
 function backup(id_lista, listado) {
      const api = `.${module_path}/backup`;
@@ -52,5 +46,3 @@ function backup(id_lista, listado) {
           })
           .catch(err => console.error(err));
 }
-
-// setTimeout(get_last_edit, 5000);
