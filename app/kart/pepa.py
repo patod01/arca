@@ -12,13 +12,16 @@ from bottle import (
 
 
 ### Config ###
-DATABASE_PATH = 'db.json'
+def config(module_path):
+     global DATABASE_PATH, MODULE_PATH, notepad
+     MODULE_PATH = module_path
+     DATABASE_PATH = '.' + MODULE_PATH + '/db.json'
 
-if os.path.isfile(DATABASE_PATH):
-     with open(DATABASE_PATH) as DB:
-          notepad = json.load(DB)
-else:
-     notepad = {}
+     if os.path.isfile(DATABASE_PATH):
+          with open(DATABASE_PATH) as DB:
+               notepad = json.load(DB)
+     else:
+          notepad = {}
 
 
 ### Real sh1t ###
@@ -28,11 +31,11 @@ def go_default(error):
 
 @route('/')
 def index():
-     return static_file('index.html', root='.')
+     return template('.' + MODULE_PATH + '/index.html', module_path=MODULE_PATH)
 
 @route('/static/<file:path>')
 def static(file):
-     return static_file(file, root='./static')
+     return static_file(file, root='.'+MODULE_PATH+'/static')
 
 @route('/kart/<modo>/<id_lista:int>')
 def kart(modo, id_lista):
@@ -43,7 +46,8 @@ def kart(modo, id_lista):
           return notepad
      elif modo == 'list':
           return template(
-               'kart.html',
+               '.' + MODULE_PATH + '/kart.html',
+               module_path=MODULE_PATH,
                id_lista=id_lista,
                listado=json.dumps(notepad[str(id_lista)]).replace('"', "'")
           )
@@ -80,11 +84,13 @@ def check_list():
 
 ### # ###
 if __name__ == '__main__':
+     config('')
      if len(sys.argv) != 3: raise Exception('EXPLODE')
      print(f'Running in {sys.argv[1]} mode on port {sys.argv[2]}...')
      if sys.argv[1] == 'dev':
           run(host='0.0.0.0', port=int(sys.argv[2]), debug=True, reloader=True)
      if sys.argv[1] == 'FTW':
           run(host='0.0.0.0', port=int(sys.argv[2]))
-
+else:
+     config('/kart')
 #ned

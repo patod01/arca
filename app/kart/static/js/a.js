@@ -22,7 +22,7 @@ function now() {
 }
 
 function get_last_edit() {
-     const api = 'last-edit';
+     const api = `.${module_path}/last-edit`;
      const method = 'GET';
      const options = {
           method: `${method}`,
@@ -38,7 +38,7 @@ function get_last_edit() {
 }
 
 function backup(id_lista, listado) {
-     const api = 'backup';
+     const api = `.${module_path}/backup`;
      const method = 'POST';
      const options = {
           method: `${method}`,

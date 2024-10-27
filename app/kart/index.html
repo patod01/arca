@@ -4,8 +4,11 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>hola</title>
-   <script src="static/js/index.js"></script>
+   <script src="{{module_path}}/static/js/index.js"></script>
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const module_path = '{{module_path}}';
+   </script>
 
    <style>
       .menu {
@@ -68,7 +71,7 @@
             @click="$refs.link_lista.click()"
          >abrir lista</button>
       </div>
-      <a x-ref="link_lista" :href="`kart/list/${id_lista}`" x-show="false">ir a lista</a>
+      <a x-ref="link_lista" :href="`{{module_path}}/kart/list/${id_lista}`" x-show="false">ir a lista</a>
    </div>
 </body>
 </html>
