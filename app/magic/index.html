@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Magic Link</title>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const timout = 2000;
+      // setTimeout(() => window.location.reload(), timout);
+      console.log(Date());
+      let a;
+      const module_path = '{{module_path}}';
+   </script>
+</head>
+<body x-data>
+
+<div>
+   {{contenido}}
+</div>
+
+<button
+   @click="
+      function gyaradont() {
+         const api = `.${module_path}/gyaradont${window.location.search}`;
+         const method = 'PUT';
+         const options = {
+            method: `${method}`,
+            headers: {'Content-Type': 'application/json'},
+            // body: JSON.stringify({})
+         };
+         fetch(`/${api}`, options)
+            .then(response => response.text())
+            .then(response => {
+               console.log(response);
+            })
+      }
+   "
+>borrar magia</button>
+
+</body>
+</html>
