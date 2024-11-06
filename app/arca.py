@@ -4,8 +4,12 @@ from bottle import Bottle, static_file
 app = Bottle()
 
 tapp = Bottle()
-with tapp: from kart import pepa
+with tapp: from kart import app as module
 app.mount('/kart', tapp)
+
+tapp = Bottle()
+with tapp: from magic import app as module
+app.mount('/magic', tapp)
 
 
 ### Real sh1t ###
