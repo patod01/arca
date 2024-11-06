@@ -76,13 +76,15 @@ def index():
      magicarp = get_db(at=MAGIC_DB_PATH)
      pokedex = get_db(at=USER_DB_PATH)
 
+     if magic_link not in magicarp.keys():
+          return 'wholesome pete'
+
      match (
-          magic_link in magicarp.keys(),
           magicarp[magic_link]['vigente'],
           magicarp[magic_link]['usos'] < magicarp[magic_link]['limite'],
           magicarp[magic_link]['limite'] == 0
      ):
-          case (1,1,1,0) | (1,1,0,1):
+          case (1,1,0) | (1,0,1):
                if pokemon and pokemon in pokedex:
                     contenido = 'estas OK!'
                else:
@@ -115,8 +117,7 @@ def index():
                     module_path=MODULE_PATH,
                     contenido=contenido
                )
-          case _:
-               return 'wholesome pete'
+     return 'wholesome pete'
 
 
 ### API ###
