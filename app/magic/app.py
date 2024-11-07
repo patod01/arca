@@ -1,5 +1,6 @@
 import sys, json, os, random
 from bottle import (
+     abort,
      error,
      redirect,
      request,
@@ -62,7 +63,7 @@ def config(module_path):
 ### Real sh1t ###
 @error(404)
 def go_default(error):
-     return 'notmyproblem .!.'
+     return 'wholesome pete'
 
 @route('/')
 def index():
@@ -131,6 +132,15 @@ def gyaradont():
           return 'eliminadous'
      else:
           return 'pete'
+
+
+### export Utility ###
+def verify_user():
+     if request.path == MODULE_PATH:
+          print('ulala')
+     elif not request.get_cookie('magicpass') in get_db(at=USER_DB_PATH):
+          print('chino cochino')
+          abort(404)
 
 
 ### # ###
