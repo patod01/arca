@@ -4,8 +4,11 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>contador qlcsmlawia</title>
-   <script src="a.js"></script>
+   <script src="{{module_path}}/a.js"></script>
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const module_path = '{{module_path}}';
+   </script>
 </head>
 <body x-data="{ players: []}">
 
@@ -29,7 +32,7 @@
       persona = '';
       nombrs.focus()
    ">ADD</button>
-   <button @click="api_shortcut('registre_players', 'POST', JSON.stringify(players))">
+   <button @click="register_players(players)">
       send list to server
    </button>
 </div>
@@ -45,11 +48,6 @@ peopel:
    </li>
    </template>
 </ul>
-
-<script>
-   let a;
-   // setTimeout(() => window.location.reload(), 20000);
-</script>
 
 </body>
 </html>

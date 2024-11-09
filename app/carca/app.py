@@ -21,17 +21,17 @@ def config(module_path):
 def go_default(error):
      return 'notmyproblem .!.'
 
-@route('/a.js')
-def staticjs():
-     return static_file('.' + MODULE_PATH + '/a.js', root='.'+MODULE_PATH+'/')
-
 @route('/')
 def landing():
-     return static_file('.' + MODULE_PATH + '/index.html', root='.'+MODULE_PATH+'/')
+     return template('.' + MODULE_PATH + '/index.html', module_path=MODULE_PATH)
+
+@route('/a.js')
+def staticjs():
+     return static_file('/a.js', root='.'+MODULE_PATH+'/')
 
 @route('/registre')
 def registar():
-     return static_file('.' + MODULE_PATH + '/registre.html', root='.'+MODULE_PATH+'/')
+     return template('.' + MODULE_PATH + '/registre.html', module_path=MODULE_PATH)
 
 @route('/tablon')
 def tablon():

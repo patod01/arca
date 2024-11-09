@@ -6,6 +6,9 @@
    <title>contador qlcsmlawia</title>
    <script src="a.js"></script>
    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const module_path = '{{module_path}}';
+   </script>
 </head>
 <body x-data="{ players: {{!jugadores}}, score: {} }">
 
@@ -94,7 +97,6 @@
 <table
    x-init="
       0;
-      a = players;
       for (let player in players)
          score[player] = players[player].reduce((cum, item) => cum + item);
    "
@@ -142,11 +144,6 @@
 
    </tbody>
 </table>
-
-<script>
-   let a;
-   // setTimeout(() => window.location.reload(), 2000)
-</script>
 
 </body>
 </html>

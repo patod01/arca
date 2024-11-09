@@ -1,14 +1,12 @@
 console.log('heaw');
 
-
-function api_shortcut(api, method, players) {
+function register_players(players) {
+     const api = `.${module_path}/registre_players`;
      const options = {
-          method: `${method}`,
+          method: `POST`,
           headers: {'Content-Type': 'application/json'},
-          body: `${players}`
+          body: `${JSON.stringify(players)}`
      };
-     console.log(players)
-     console.log(typeof players)
      fetch(`/${api}`, options)
           .then(response => response.text())
           .then(response => {
@@ -17,9 +15,8 @@ function api_shortcut(api, method, players) {
           .catch(err => console.error(err));
 }
 
-
 function save_points(player, points) {
-     const api = `save_points/${player}`;
+     const api = `.${module_path}/save_points/${player}`;
      const options = {
           method: `PUT`,
           headers: {'Content-Type': 'application/json'},
