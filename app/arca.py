@@ -9,6 +9,10 @@ app.mount('/magic', tapp)
 app.add_hook('before_request', module.verify_user)
 
 tapp = Bottle()
+with tapp: from carca import app as module
+app.mount('/carca', tapp)
+
+tapp = Bottle()
 with tapp: from kart import app as module
 app.mount('/kart', tapp)
 
