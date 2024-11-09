@@ -1,29 +1,45 @@
 import sys
-from bottle import error, route, run, static_file, template, request, response
+from bottle import (
+     error,
+     request,
+     response,
+     route,
+     run,
+     static_file,
+     template,
+)
 
 
-### Default settings ###
+### settings ###
+def config(module_path):
+     global MODULE_PATH
+     MODULE_PATH = module_path
+
+
+### Real sh1t ###
 @error(404)
 def go_default(error):
      return 'notmyproblem .!.'
 
-
-### Real sh1t ###
 @route('/a.js')
 def staticjs():
-     return static_file('/a.js', root='.')
+     return static_file('.' + MODULE_PATH + '/a.js', root='.'+MODULE_PATH+'/')
 
 @route('/')
 def landing():
-     return static_file('index.html', root='.')
+     return static_file('.' + MODULE_PATH + '/index.html', root='.'+MODULE_PATH+'/')
 
 @route('/registre')
 def registar():
-     return static_file('registre.html', root='.')
+     return static_file('.' + MODULE_PATH + '/registre.html', root='.'+MODULE_PATH+'/')
 
 @route('/tablon')
 def tablon():
-     return template('tablon.html', jugadores=jugadores)
+     return template(
+          '.' + MODULE_PATH + '/tablon.html',
+          module_path=MODULE_PATH,
+          jugadores=jugadores
+     )
 
 
 ### API ###
@@ -57,13 +73,15 @@ jugadores = {
      "patox5": [1,2,3,0,5,6,7],
 }
 
-
 if __name__ == '__main__':
+     config('')
      if len(sys.argv) != 3: raise Exception('EXPLODE')
      print(f'Running in {sys.argv[1]} mode on port {sys.argv[2]}...')
      if sys.argv[1] == 'dev':
           run(host='0.0.0.0', port=int(sys.argv[2]), debug=True, reloader=True)
      if sys.argv[1] == 'FTW':
           run(host='0.0.0.0', port=int(sys.argv[2]))
+else:
+     config('/carca')
 
 #ned
