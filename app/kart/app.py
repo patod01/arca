@@ -1,4 +1,4 @@
-import sys, json, os, random
+import sys, json, os, random, time, math
 from bottle import (
      error,
      redirect,
@@ -13,7 +13,7 @@ from bottle import (
 
 ### Config ###
 def config(module_path):
-     global DATABASE_PATH, MODULE_PATH, notepad
+     global DATABASE_PATH, MODULE_PATH, last_edit, notepad
      MODULE_PATH = module_path
      DATABASE_PATH = '.' + MODULE_PATH + '/db.json'
 
@@ -22,6 +22,11 @@ def config(module_path):
                notepad = json.load(DB)
      else:
           notepad = {}
+
+     last_edit = now()
+
+def now():
+     return math.floor(time.time())
 
 
 ### Real sh1t ###
@@ -46,13 +51,25 @@ def kart(id_lista):
                '.' + MODULE_PATH + '/kart.html',
                module_path=MODULE_PATH,
                id_lista=id_lista,
-               listado=json.dumps(notepad[str(id_lista)]).replace('"', "'")
+               listado=json.dumps(notepad[str(id_lista)]).replace('"', "'"),
+               last_server_edit=last_edit
           )
 
 
 ### API ###
 @route('/backup', method=['POST'])
 def backup():
+     global last_edit; last_edit = now()
+     # list_id = str(request.json['id_lista'])
+     # lista_db = notepad[list_id]
+     # lista_web = request.json['listado']
+     # for i, item in enumerate(lista_web):
+     #      if lista_db[i] != item:
+     #           print('cambio')
+     #           lista_db[i] = item
+     #      else:
+     #           print('ok')
+
      notepad[str(request.json['id_lista'])] = request.json['listado']
      with open(DATABASE_PATH, 'w') as DB:
           json.dump(notepad, DB)
@@ -77,6 +94,10 @@ def check_list():
           return 'encontrada'
      else:
           return 'inexistente'
+
+@route('/last_edit', 'GET')
+def last_edit():
+     return str(last_edit)
 
 
 ### # ###

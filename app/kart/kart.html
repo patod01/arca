@@ -17,8 +17,25 @@
       filtro: 'todo',
       new_item: '',
       bulk: false,
-      last_time: []
+      last_server_edit: {{last_server_edit}},
+      last_local_edit: now(),
+      edited: false
    }"
+   x-init="
+      setInterval(async () => {
+         last_server_edit = await get_last_edit();
+         if (last_server_edit > last_local_edit) {
+            console.log('jiji');
+            window.location.reload();
+         } else if (edited) {;
+            backup(id_lista, listado);
+            edited = false;
+            last_local_edit = now() + 3;
+            console.log('listado enviado!');
+         }
+      }, 5000);
+   "
+   @edited=""
 >
 
 <!--! Agregador de items -->
@@ -30,10 +47,9 @@
       x-model="new_item"
       @keydown.enter="add_item_to(listado, new_item); new_item = ''"
    >
-   <button @click="add_item_to(listado, new_item); new_item = ''">
+   <button @click="add_item_to(listado, new_item); new_item = ''; edited = true;">
       agregar
    </button>
-   <button @click="backup(id_lista, listado)">backup!</button>
 </div>
 
 
@@ -68,7 +84,7 @@
 <div
    x-data="{filas: 1, contenido: '', old: ''}"
    id="editor"
-   @click.outside="bulk = false"
+   @click.outside="bulk = false;"
 >
    <p>escribe un listado separado por saltos de linea cada item</p>
 
@@ -88,7 +104,7 @@
          return cosas.slice(0, -1);
       })();
       $watch('contenido', contenido => filas = contenido.split('\n').length);
-      old = contenido"
+      old = contenido;"
    ></textarea>
 
    <br>
@@ -115,6 +131,7 @@
             }
          }
          bulk = false;
+         edited = true;
       "
    >guardar</button>
 </div>
@@ -219,15 +236,15 @@
          <button
             x-text="item.is_ready? 'hecho': 'pendiente'"
             x-show="!options"
-            @click="item.is_ready = !item.is_ready"
+            @click="item.is_ready = !item.is_ready; edited = true;"
          ></button>
          <button
             x-show="options && !editing"
-            @click="listado.splice(id, 1); options = !options"
+            @click="listado.splice(id, 1); options = !options; edited = true;"
          >borrar</button>
          <button
             x-show="options"
-            @click="editing = !editing"
+            @click="if (editing) edited = true; editing = !editing;"
             x-text="editing? 'guardar': 'editar'"
          ></button>
       </div>

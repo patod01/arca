@@ -3,7 +3,7 @@ function add_item_to(listado, new_item) {
           listado.push({nombre: new_item, is_ready: false, hora: 0});
 }
 
-function now() {
+function formattedNow() {
      return [
           new Date().getFullYear(),
           new Date().getMonth(),
@@ -14,22 +14,19 @@ function now() {
      ];
 }
 
-function get_last_edit() {
-     const api = `.${module_path}/last-edit`;
+function now() {return Math.floor(new Date().getTime()/1000);}
+
+async function get_last_edit() {
+     const api = `${module_path}/last_edit`;
      const method = 'GET';
      const options = {
           method: `${method}`,
-          headers: {'Content-Type': 'application/json'},
      };
-     fetch(`/${api}`, options)
+     return await fetch(`${api}`, options)
           .then(response => response.json())
-          .then(response => {
-               console.log(response);
-          })
+          .then(secondsFromEpoch => secondsFromEpoch)
           .catch(err => console.error(err));
 }
-
-// setTimeout(get_last_edit, 5000);
 
 function backup(id_lista, listado) {
      const api = `.${module_path}/backup`;
