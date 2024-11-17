@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>contador qlcsmlawia</title>
+   <script src="a.js"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const module_path = '{{module_path}}';
+   </script>
+</head>
+<body x-data="{ players: {{!jugadores}}, stakes: {{stakes}}, hole: {{hole}} }">
+
+<style>
+   .players {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      background: wheat;
+      max-width: 301px;
+      min-height: 70vh;
+      div {
+         line-height: 3rem;
+      }
+      margin: auto;
+   }
+   .player {
+      display: flex;
+      justify-content: space-between;
+      width: 50%;
+   }
+</style>
+
+<!--! TABLA -->
+<h2>staked: <span x-text="stakes"></span></h2>
+<h2>Hoards:</h2>
+<div class="players" x-init="a = players">
+   <template x-for="gold, player in players">
+   <div class="player">
+      <a :href="`tabla/${player}`" x-text="`${player}:`"></a>
+      <span x-text="`${gold} dg`"></span>
+   </div>
+   </template>
+</div>
+<h2>The Hole: <span x-text="hole"></span></h2>
+
+</body>
+</html>

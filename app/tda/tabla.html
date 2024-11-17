@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>contador qlcsmlawia</title>
+   <script src="{{module_path}}/a.js"></script>
+   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+   <script>
+      const module_path = '{{module_path}}';
+   </script>
+</head>
+<body x-data="{
+   players: {{!jugadores}},
+   player: '{{jugador}}',
+   player2: '',
+   gold: {{oro}},
+   gold_taken: 0,
+   stakes: {{stakes}},
+   stolen_gold: 0,
+   hole: {{hole}},
+   mode: '',
+   winning: false
+}">
+
+
+<h2 x-text="`staked gold: ${stakes - stolen_gold} [dg]`"></h2>
+<h2 x-text="`gold in The Hole: ${hole} [dg]`"></h2>
+<h2 x-text="`${player}'s gold: ${gold - gold_taken} [dg]`"></h2>
+
+<button @click="mode = 'give to a player'">
+   give to player
+</button>
+<button @click="mode = 'pay to stakes'">
+   pay to stakes
+</button>
+<button @click="mode = 'pay to The Hole'">
+   pay to The Hole
+</button>
+<button @click="mode = 'steal from stakes'">
+   steal from stakes
+</button>
+
+<div x-show="mode">
+   <h3 x-text="`how much gold to ${mode}?`"></h3>
+   Gold:
+   <input
+      type="number"
+      autofocus
+      min="0"
+      :max="mode == 'pay to The Hole'? '': gold"
+      x-model="gold_taken"
+      x-show="mode != 'steal from stakes'"
+   >
+   <input
+      type="number"
+      autofocus
+      min="0"
+      x-model="stolen_gold"
+      x-show="mode == 'steal from stakes'"
+   >
+
+   <div x-show="mode == 'give to a player'">
+      Player: <input type="text" list="jugadores" x-model="player2">
+      <datalist id="jugadores">
+         <template x-for="option in players">
+         <option :value="option"></option>
+         </template>
+      </datalist>
+   </div>
+
+   <button @click="
+      if (mode == 'give to a player')
+         console.log(await send_coins(mode, parseInt(gold_taken), player, player2));
+      else if (mode == 'steal from stakes')
+         console.log(await send_coins(mode, parseInt(stolen_gold), player));
+      else
+         console.log(await send_coins(mode, parseInt(gold_taken), player));
+      gold -= gold_taken;
+      gold += parseInt(stolen_gold);
+      stakes -= stolen_gold;
+      gold_taken = 0;
+      stolen_gold = 0;
+      player2 = '';
+      mode = '';
+   ">GO</button>
+</div>
+
+<br><br>
+<button @click="winning = !winning">claim the stakes!</button>
+
+<div x-show="winning">
+   <button @click="console.log(await claim_staked(player))">confirm</button>
+</div>
+
+
+</body>
+</html>

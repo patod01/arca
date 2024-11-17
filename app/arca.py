@@ -16,6 +16,10 @@ tapp = Bottle()
 with tapp: from kart import app as module
 app.mount('/kart', tapp)
 
+tapp = Bottle()
+with tapp: from tda import app as module
+app.mount('/tda', tapp)
+
 ### Real sh1t ###
 @app.error(404)
 def go_default(error):
