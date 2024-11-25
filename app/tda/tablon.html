@@ -10,7 +10,16 @@
       const module_path = '{{module_path}}';
    </script>
 </head>
-<body x-data="{ players: {{!jugadores}}, stakes: {{stakes}}, hole: {{hole}} }">
+<body
+   x-data="{ players: {{!jugadores}}, stakes: {{stakes}}, hole: {{hole}}, end: false }"
+   x-init="
+      0;
+      for (let player in players) {
+         if (players[player].gold < 0)
+            end = true;
+      }
+   "
+>
 
 <style>
    .players {
@@ -29,22 +38,29 @@
    .player {
       display: flex;
       justify-content: space-between;
+      margin: auto;
       width: 50%;
    }
 </style>
 
 <!--! TABLA -->
-<h2>staked: <span x-text="stakes"></span></h2>
-<h2>Hoards:</h2>
-<div class="players" x-init="a = players">
-   <template x-for="gold, player in players">
+<h2>Staked: <span x-text="stakes"></span> [dg]</h2>
+<h2>The Hole: <span x-text="hole"></span> [dg]</h2>
+<h2>Tablon<span x-show="end"> (Game finished!)</span>:</h2>
+<div class="player headers">
+   <span>Player</span>
+   <span>Hoard</span>
+   <span>Debt</span>
+</div>
+<div class="players">
+   <template x-for="info, player in players">
    <div class="player">
       <a :href="`tabla/${player}`" x-text="`${player}:`"></a>
-      <span x-text="`${gold} dg`"></span>
+      <span x-text="`${info.gold} dg`"></span>
+      <span x-text="`${info.debt} dg`"></span>
    </div>
    </template>
 </div>
-<h2>The Hole: <span x-text="hole"></span></h2>
 
 </body>
 </html>

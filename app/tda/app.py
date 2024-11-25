@@ -12,8 +12,9 @@ from bottle import (
 
 ### settings ###
 def config(module_path):
-     global MODULE_PATH, The_House
+     global MODULE_PATH, The_House, jugadores
      The_House = {"stakes": 0, "The Hole": 0}
+     jugadores = {}
      MODULE_PATH = module_path
 
 
@@ -51,7 +52,8 @@ def tabla(jugador):
           module_path=MODULE_PATH,
           jugadores=list(filter(lambda x: x != jugador, jugadores.keys())),
           jugador=jugador,
-          oro=jugadores[jugador],
+          gold=jugadores[jugador]['gold'],
+          debt=jugadores[jugador]['debt'],
           stakes=The_House['stakes'],
           hole=The_House['The Hole']
      )
@@ -61,10 +63,14 @@ def tabla(jugador):
 @route('/registre_players', method=['POST'])
 def registre_players():
      print((request.json))
-     global jugadores
+     global The_House, jugadores
+     The_House = {"stakes": 0, "The Hole": 0}
      jugadores = {}
      for player in request.json['players']:
-          jugadores[player] = int(request.json['gold']/len(request.json['players']))
+          jugadores[player] = {
+               "gold": int(request.json['gold']/len(request.json['players'])),
+               "debt": 0
+          }
      for player in jugadores: print(f'{player}: {jugadores[player]}')
      return 'jugadores actualizados'
 
@@ -73,36 +79,45 @@ def send_coins():
      global The_House, jugadores
      mode = request.json['mode']
      amount_of_gold = request.json['amount_of_gold']
+     abuse = request.json['abuse']
      from_player = request.json['from_player']
      to_player = request.json['to_player']
 
      if mode == 'give to a player':
           if to_player not in jugadores.keys(): return 'wtf u sckr'
-          jugadores[from_player]-=amount_of_gold
-          jugadores[to_player]+=amount_of_gold
+          jugadores[from_player]['gold']-=amount_of_gold+abuse
+          jugadores[from_player]['debt']-=abuse
+          jugadores[to_player]['gold']+=amount_of_gold+abuse
      elif mode == 'pay to stakes':
-          jugadores[from_player]-=amount_of_gold
-          The_House['stakes']+=amount_of_gold
-     elif mode == 'pay to The Hole':
-          jugadores[from_player]-=amount_of_gold
-          The_House['The Hole']+=amount_of_gold
+          jugadores[from_player]['gold']-=amount_of_gold+abuse
+          jugadores[from_player]['debt']-=abuse
+          The_House['stakes']+=amount_of_gold+abuse
      elif mode == 'steal from stakes':
           The_House['stakes']-=amount_of_gold
-          jugadores[from_player]+=amount_of_gold
+          jugadores[from_player]['gold']+=amount_of_gold
 
      return 'cartera actualizada!'
 
 @route('/claim_staked', method=['POST'])
 def claim_staked():
      global The_House, jugadores
-     jugadores[request.json['player']]+=The_House['stakes']
+     game_finished = False
+     player = request.json['player']
+     jugadores[player]['gold']+=The_House['stakes']
      The_House['stakes'] = 0
-     return 'congrats!'
+     for player in jugadores.keys():
+          balance = jugadores[player]['gold'] - jugadores[player]['debt']
+          if balance < 0:
+               The_House['The Hole']+=jugadores[player]['gold']
+               game_finished = True
+          else:
+               The_House['The Hole']+=jugadores[player]['debt']
+          jugadores[player]['gold']-=jugadores[player]['debt']
+          jugadores[player]['debt'] = 0
+     return ' '.join(f'gambit {"and game" if game_finished else ""} finished!'.split())
 
 
 ### # ###
-jugadores = {}
-
 if __name__ == '__main__':
      config('')
      if len(sys.argv) != 3: raise Exception('EXPLODE')

@@ -1,5 +1,3 @@
-console.log('heaw');
-
 function registre_players(players, gold) {
      const api = `.${module_path}/registre_players`;
      const options = {
@@ -14,12 +12,12 @@ function registre_players(players, gold) {
           })
 }
 
-async function send_coins(mode, amount_of_gold, from_player, to_player=null) {
+async function send_coins(mode, amount_of_gold, abuse, from_player, to_player=null) {
      const api = `.${module_path}/send_coins`;
      const options = {
           method: `POST`,
           headers: {'Content-Type': 'application/json'},
-          body: `${JSON.stringify({mode, amount_of_gold, from_player, to_player})}`
+          body: `${JSON.stringify({mode, amount_of_gold, abuse, from_player, to_player})}`
      };
      return await fetch(`/${api}`, options)
           .then(response => response.text())
