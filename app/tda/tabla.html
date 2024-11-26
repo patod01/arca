@@ -10,9 +10,20 @@
       const module_path = '{{module_path}}';
    </script>
    <style>
+      [x-cloak]{display: none;}
       button {
          height: 42px;
          margin: 11px;
+      }
+      .update {
+         background: lightcoral;
+      }
+      .movit {
+         width: 42px;
+      }
+      .input {
+         padding: 7px;
+         border-style: solid;
       }
    </style>
 </head>
@@ -33,7 +44,6 @@
       update: false
    }"
    x-init="$watch('gold_taken', (gold_taken, last_taken) => {
-      [gold_taken, last_taken] = [parseInt(gold_taken), parseInt(last_taken)];
       if (gold - gold_taken < 0 && last_taken < gold_taken)
          abuso--;
       else if (gold - gold_taken <= 0 && last_taken > gold_taken)
@@ -56,47 +66,47 @@
 <button @click="mode = 'steal from stakes'">
    steal from stakes
 </button>
+<button class="update" x-show="update" @click="window.location.reload()" x-cloak x-transition>
+   RELOAD
+</button>
 
-<div x-show="mode">
+<div x-show="mode" x-cloak x-transition>
    <h3 x-text="`how much gold to ${mode}?`"></h3>
 
-   Gold:
-   <input
-      type="number"
-      autofocus
-      min="0"
-      x-model="gold_taken"
-      x-show="mode != 'steal from stakes'"
-   >
-   <input
-      type="number"
-      autofocus
-      min="0"
-      :max="stakes"
-      x-model="stolen_gold"
-      x-show="mode == 'steal from stakes'"
-   >
+   <div class="input" x-show="mode != 'steal from stakes'">
+      Gold:
+      <span x-text="gold_taken"></span>
+      <button class="movit" @click="gold_taken > 0? gold_taken--: null">-1</button>
+      <button class="movit" @click="gold_taken++">+1</button>
 
-   <div x-show="mode == 'give to a player'">
-      Player: <input type="text" list="jugadores" x-model="player2">
-      <datalist id="jugadores">
-         <template x-for="option in players">
-         <option :value="option"></option>
-         </template>
-      </datalist>
+      <div x-show="mode == 'give to a player'">
+         Player: <input type="text" list="jugadores" x-model="player2">
+         <datalist id="jugadores">
+            <template x-for="option in players">
+            <option :value="option"></option>
+            </template>
+         </datalist>
+      </div>
+   </div>
+
+   <div class="input" x-show="mode == 'steal from stakes'">
+      Gold:
+      <span x-text="stolen_gold"></span>
+      <button class="movit" @click="stolen_gold > 0? stolen_gold--: null">-1</button>
+      <button class="movit" @click="stolen_gold < stakes? stolen_gold++: null">+1</button>
    </div>
 
    <button @click="
       if (mode == 'give to a player')
-         console.log(await send_coins(mode, parseInt(gold_taken), abuso, player, player2));
+         console.log(await send_coins(mode, gold_taken, abuso, player, player2));
       else if (mode == 'pay to stakes')
-         console.log(await send_coins(mode, parseInt(gold_taken), abuso, player));
+         console.log(await send_coins(mode, gold_taken, abuso, player));
       else if (mode == 'steal from stakes')
-         console.log(await send_coins(mode, parseInt(stolen_gold), abuso, player));
-      console.log(mode)
+         console.log(await send_coins(mode, stolen_gold, abuso, player));
+      console.log(mode);
       gold -= gold_taken;
       if (gold < 0) gold = 0;
-      gold += parseInt(stolen_gold);
+      gold += stolen_gold;
       stakes -= stolen_gold;
       gold_taken = 0;
       $nextTick(() => abuso = 0);

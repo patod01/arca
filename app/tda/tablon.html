@@ -9,6 +9,9 @@
    <script>
       const module_path = '{{module_path}}';
    </script>
+   <script>
+      setTimeout(() => window.location.reload(), 11111);
+   </script>
 </head>
 <body
    x-data="{ players: {{!jugadores}}, stakes: {{stakes}}, hole: {{hole}}, end: false }"
@@ -22,6 +25,7 @@
 >
 
 <style>
+   [x-cloak]{display: none;}
    .players {
       display: flex;
       flex-direction: column;
@@ -46,7 +50,7 @@
 <!--! TABLA -->
 <h2>Staked: <span x-text="stakes"></span> [dg]</h2>
 <h2>The Hole: <span x-text="hole"></span> [dg]</h2>
-<h2>Tablon<span x-show="end"> (Game finished!)</span>:</h2>
+<h2>Tablon<span x-show="end" x-cloak> (Game finished!)</span>:</h2>
 <div class="player headers">
    <span>Player</span>
    <span>Hoard</span>
